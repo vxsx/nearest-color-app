@@ -1,3 +1,4 @@
+@import '~react-toolbox/lib/_globals.scss';
 .title {
   margin-bottom: 2rem;
   display: flex;
@@ -16,6 +17,12 @@
 .item {
   margin: 0 1rem 2rem;
   max-width: 15rem;
+  @media (min-width: $layout-breakpoint-xs) {
+    max-width: 20rem;
+  }
+  @media (min-width: $layout-breakpoint-sm) {
+    max-width: 24.5rem;
+  }
 }
 .itemNonMatch {
   opacity: 0.3;
