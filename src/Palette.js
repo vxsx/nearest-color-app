@@ -15,7 +15,7 @@ const ColorsList = (props) => (
       }
 
       return (
-        <Card key={color} className={className}>
+        <Card key={color} raised={props.match && props.match === color} className={className}>
           <CardMedia color={color} aspectRatio="wide" />
           <CardTitle title={color} />
         </Card>
