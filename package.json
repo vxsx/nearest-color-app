@@ -1,0 +1,60 @@
+{
+  "name": "nearest-color-app",
+  "version": "1.0.0",
+  "description": "Minimal app to find nearest color out of given palette",
+  "scripts": {
+    "start": "node server.js",
+    "lint": "eslint src",
+    "dist": "webpack --config webpack.config.production.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vxsx/nearest-color-app"
+  },
+  "keywords": [
+    "react",
+    "color",
+    "nearest",
+    "difference",
+    "hot",
+    "reload",
+    "webpack"
+  ],
+  "author": "Vadim Sikora",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/vxsx/nearest-color-app/issues"
+  },
+  "homepage": "https://vxsx.github.io/nearest-color-app",
+  "devDependencies": {
+    "autoprefixer": "6.3.6",
+    "babel-core": "^6.0.20",
+    "babel-eslint": "^4.1.3",
+    "babel-loader": "^6.0.1",
+    "babel-plugin-lodash": "^2.3.0",
+    "babel-preset-es2015": "^6.0.15",
+    "babel-preset-react": "^6.0.15",
+    "babel-preset-stage-0": "^6.0.15",
+    "css-loader": "^0.23.1",
+    "eslint": "^1.10.3",
+    "eslint-plugin-react": "^3.6.2",
+    "extract-text-webpack-plugin": "1.0.1",
+    "node-sass": "^3.4.2",
+    "postcss-loader": "0.8.2",
+    "react-hot-loader": "^1.3.0",
+    "sass-loader": "3.2.0",
+    "style-loader": "0.13.1",
+    "toolbox-loader": "0.0.3",
+    "webpack": "^1.12.2",
+    "webpack-dev-server": "^1.12.1"
+  },
+  "dependencies": {
+    "color-diff": "^1.0.0",
+    "lodash": "^4.11.1",
+    "normalize.css": "^4.1.1",
+    "react": "^15.0.1",
+    "react-addons-css-transition-group": "^15.0.1",
+    "react-dom": "^15.0.1",
+    "react-toolbox": "^0.16.2"
+  }
+}
