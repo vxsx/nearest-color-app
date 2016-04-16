@@ -1,0 +1,22 @@
+.title {
+  margin-bottom: 2rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.list {
+  display: flex;
+  flex-direction: row;
+  margin: 0 -1rem 2rem;
+  flex-wrap: wrap;
+}
+
+.item {
+  margin: 0 1rem 2rem;
+  max-width: 15rem;
+}
+.itemNonMatch {
+  opacity: 0.3;
+}
