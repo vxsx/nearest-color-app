@@ -1,8 +1,9 @@
 import { Component } from 'react';
 import { Card, CardMedia, CardTitle } from 'react-toolbox/lib/card';
+import { Button } from 'react-toolbox/lib/button';
 import Input from 'react-toolbox/lib/input';
 import style from './palette.scss';
-import { uniq } from 'lodash';
+import { uniq, without } from 'lodash';
 import diff from 'color-diff';
 
 const ColorsList = (props) => (
@@ -15,8 +16,15 @@ const ColorsList = (props) => (
       }
 
       return (
-        <Card key={color} raised={props.match && props.match === color} className={className}>
-          <CardMedia color={color} aspectRatio="wide" />
+        <Card key={color} raised={!!(props.match && props.match === color)} className={className}>
+          <CardMedia color={color} aspectRatio="wide">
+            <Button
+              icon="delete"
+              floating mini primary
+              className={style.delete}
+              onClick={() => props.onRemove(color)}
+            />
+          </CardMedia>
           <CardTitle title={color} />
         </Card>
       );
@@ -59,12 +67,21 @@ export default class Palette extends Component {
     return [];
   }
 
-  writeStateFromHash(state) {
+  writeStateToHash(state) {
     window.location.hash = '#' + JSON.stringify(state.colors);
   }
 
-  componentDidUpdate() {
-    this.writeStateFromHash(this.state);
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.colors !== this.state.colors) {
+      this.writeStateToHash(this.state);
+    }
+
+    if (
+      (prevState.colors !== this.state.colors && this.state.nearestColor) ||
+      (prevState.nearestColor !== this.state.nearestColor)
+    ) {
+      this.findNearestColor(this.state.nearestColor);
+    }
   }
 
   // FIXME should live in utils or reducers
@@ -100,8 +117,13 @@ export default class Palette extends Component {
     });
   }
 
+  onRemove(color) {
+    this.setState({
+      colors: without(this.state.colors, color)
+    })
+  }
+
   findNearestColor(value) {
-    this.handleInputChange('nearestColor', value);
     if (!this.isValidColor(value)) {
       this.setState({
         computedNearestColor: ''
@@ -128,10 +150,14 @@ export default class Palette extends Component {
           <Input type="text" name="compare"
             label="Find nearest color"
             value={this.state.nearestColor}
-            onChange={(value) => this.findNearestColor(value)}
+            onChange={(value) => this.handleInputChange('nearestColor', value)}
           />
         </div>
-        <ColorsList colors={this.state.colors} match={this.state.computedNearestColor} />
+        <ColorsList
+          colors={this.state.colors}
+          match={this.state.computedNearestColor}
+          onRemove={(color) => this.onRemove(color)}
+        />
         <Input type="text" name="color"
           label="Add color"
           value={this.state.addColor}

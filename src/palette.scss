@@ -27,3 +27,15 @@
 .itemNonMatch {
   opacity: 0.3;
 }
+
+.delete {
+  display: none;
+}
+[data-react-toolbox="card"]:hover {
+  .delete {
+    display: block;
+    position: absolute !important;
+    right: 1rem;
+    top: 1rem;
+  }
+}
