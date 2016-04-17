@@ -12,7 +12,7 @@ const ColorsList = (props) => (
       let className = style.item;
 
       if (props.match && props.match !== color) {
-        className = `${className} ${style.itemNonMatch}`;
+        className = style.itemNonMatch;
       }
 
       return (

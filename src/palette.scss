@@ -25,6 +25,7 @@
   }
 }
 .itemNonMatch {
+  composes: .item:
   opacity: 0.3;
 }
 
