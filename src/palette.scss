@@ -35,19 +35,21 @@
   }
 }
 .itemNonMatch {
-  composes: .item:
+  composes: item;
   opacity: 0.3;
 }
 
 .delete {
   display: none;
 }
+
 [data-react-toolbox="card"] h5 {
   font-size: 1.6rem !important;
   @media (min-width: $layout-breakpoint-xs) {
     font-size: 2.4rem !important;
   }
 }
+
 [data-react-toolbox="card"]:hover {
   .delete {
     display: block;
