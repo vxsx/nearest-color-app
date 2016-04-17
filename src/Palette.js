@@ -64,7 +64,11 @@ export default class Palette extends Component {
     const hash = window.location.hash.replace(/^#/, '');
 
     if (hash) {
-      return JSON.parse(hash);
+      try {
+        return JSON.parse(decodeURIComponent(hash));
+      } catch (e) {
+        console.error('Cannot decode invalid json');
+      }
     }
     return [];
   }
