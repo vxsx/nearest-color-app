@@ -17,14 +17,16 @@ const ColorsList = (props) => (
 
       return (
         <Card key={color} raised={!!(props.match && props.match === color)} className={className}>
-          <CardMedia color={color} aspectRatio="wide">
-            <Button
-              icon="delete"
-              floating mini primary
-              className={style.delete}
-              onClick={() => props.onRemove(color)}
-            />
-          </CardMedia>
+          <div className={style.cardMediaFix}>
+            <CardMedia color={color} aspectRatio="wide">
+                <Button
+                  icon="delete"
+                  floating mini primary
+                  className={style.delete}
+                  onClick={() => props.onRemove(color)}
+                />
+            </CardMedia>
+            </div>
           <CardTitle title={color} />
         </Card>
       );

@@ -40,3 +40,10 @@
     top: 1rem;
   }
 }
+// cardmedia is currently broken in ff so I fix it myself
+// http://stackoverflow.com/questions/23717953/padding-bottom-top-in-flexbox-layout
+.cardMediaFix {
+  > div {
+    display: block;
+  }
+}
