@@ -119,7 +119,7 @@ export default class Palette extends Component {
 
   normalizeColor(color) {
     const MIN_LENGTH_WITH_HASH = 4;
-    let normalizedColor;
+    let normalizedColor = color;
 
     if (color.length <= MIN_LENGTH_WITH_HASH) {
       normalizedColor = color.replace(/([0-9A-F])/gi, '$1$1');
