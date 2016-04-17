@@ -153,11 +153,16 @@ export default class Palette extends Component {
       <div>
         <div className={style.title}>
           <h2>Palette</h2>
-          <Input type="text" name="compare"
-            label="Find nearest color"
-            value={this.state.nearestColor}
-            onChange={(value) => this.handleInputChange('nearestColor', value)}
-          />
+          <div className={style.previewWrap}>
+            {this.state.nearestColor && this.state.computedNearestColor ? (
+              <div className={style.preview} style={{backgroundColor: this.normalizeColor(this.state.nearestColor)}} />
+            ) : null}
+            <Input type="text" name="compare"
+              label="Find color"
+              value={this.state.nearestColor}
+              onChange={(value) => this.handleInputChange('nearestColor', value)}
+            />
+          </div>
         </div>
         <ColorsList
           colors={this.state.colors}

@@ -1,4 +1,5 @@
 @import '~react-toolbox/lib/_globals.scss';
+@import '~react-toolbox/lib/_mixins.scss';
 
 .title {
   margin-bottom: 2rem;
@@ -37,6 +38,18 @@
 .itemNonMatch {
   composes: item;
   opacity: 0.3;
+}
+
+.previewWrap {
+  flex-direction: row;
+  display: flex;
+}
+.preview {
+  margin-right: 1rem;
+  width: 3rem;
+  height: 3rem;
+  display: block;
+  @include shadow-2dp();
 }
 
 .delete {
