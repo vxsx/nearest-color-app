@@ -1,4 +1,3 @@
-import { Component } from 'react';
 import style from './header.scss';
 import AppBar from 'react-toolbox/lib/app_bar';
 

@@ -6,6 +6,8 @@ import style from './palette.scss';
 import { uniq, without } from 'lodash';
 import diff from 'color-diff';
 
+const ENTER = 13;
+
 const ColorsList = (props) => (
   <div className={style.list}>
     {props.colors.map((color) => {
@@ -34,20 +36,38 @@ const ColorsList = (props) => (
   </div>
 );
 
+/**
+ * @function convertHexToRGB
+ * @param {String} hex representation of the color
+ * @returns {Object} { R, G, B }
+ */
 function convertHexToRGB(hex) {
-  hex = hex.replace(/^#/, '');
+  const color = hex.replace(/^#/, '');
+
+  /* eslint-disable no-magic-numbers */
   return {
-    R: parseInt(hex.substring(0, 2), 16),
-    G: parseInt(hex.substring(2, 4), 16),
-    B: parseInt(hex.substring(4, 6), 16)
+    R: parseInt(color.substring(0, 2), 16),
+    G: parseInt(color.substring(2, 4), 16),
+    B: parseInt(color.substring(4, 6), 16)
   };
+  /* eslint-enable no-magic-numbers */
 }
 
+/**
+ * @function convertRGBToHex
+ * @param {Object} rgb color object
+ * @param {Number} rgb.R red
+ * @param {Number} rgb.G green
+ * @param {Number} rgb.B blue
+ * @returns {String} hex representation of the color
+ */
 function convertRGBToHex(rgb) {
   const { R, G, B } = rgb;
 
-  return `#${('0' + R.toString(16)).slice(-2)}${('0' + G.toString(16)).slice(-2)}${('0' + B.toString(16)).slice(-2)}`
-};
+  /* eslint-disable no-magic-numbers */
+  return `#${('0' + R.toString(16)).slice(-2)}${('0' + G.toString(16)).slice(-2)}${('0' + B.toString(16)).slice(-2)}`;
+  /* eslint-enable no-magic-numbers */
+}
 
 export default class Palette extends Component {
   constructor(props) {
@@ -57,7 +77,7 @@ export default class Palette extends Component {
       findNearestColor: '',
       computedNearestColor: '',
       colors: this.readStateFromHash()
-    }
+    };
   }
 
   readStateFromHash() {
@@ -67,7 +87,7 @@ export default class Palette extends Component {
       try {
         return JSON.parse(decodeURIComponent(hash));
       } catch (e) {
-        console.error('Cannot decode invalid json');
+        return [];
       }
     }
     return [];
@@ -98,12 +118,15 @@ export default class Palette extends Component {
   }
 
   normalizeColor(color) {
-    if (color.length <= 4) {
-      color = color.replace(/([0-9A-F])/gi, '$1$1');
-    }
-    color = color.replace(/^#/g, '');
+    const MIN_LENGTH_WITH_HASH = 4;
+    let normalizedColor;
 
-    return `#${color.toUpperCase()}`;
+    if (color.length <= MIN_LENGTH_WITH_HASH) {
+      normalizedColor = color.replace(/([0-9A-F])/gi, '$1$1');
+    }
+    normalizedColor = normalizedColor.replace(/^#/g, '');
+
+    return `#${normalizedColor.toUpperCase()}`;
   }
 
   addColor(color) {
@@ -114,7 +137,7 @@ export default class Palette extends Component {
     this.setState({
       colors: uniq([this.normalizeColor(color)].concat(this.state.colors)),
       addColor: ''
-    })
+    });
   }
 
   handleInputChange(name, value) {
@@ -126,14 +149,14 @@ export default class Palette extends Component {
   onRemove(color) {
     this.setState({
       colors: without(this.state.colors, color)
-    })
+    });
   }
 
   findNearestColor(value) {
     if (!this.isValidColor(value)) {
       this.setState({
         computedNearestColor: ''
-      })
+      });
       return;
     }
     const color = this.normalizeColor(value);
@@ -155,7 +178,9 @@ export default class Palette extends Component {
           <h2>Palette</h2>
           <div className={style.previewWrap}>
             {this.state.nearestColor && this.state.computedNearestColor ? (
-              <div className={style.preview} style={{backgroundColor: this.normalizeColor(this.state.nearestColor)}} />
+              <div className={style.preview} style={{
+                backgroundColor: this.normalizeColor(this.state.nearestColor)
+              }} />
             ) : null}
             <Input type="text" name="compare"
               label="Find color"
@@ -173,8 +198,8 @@ export default class Palette extends Component {
           label="Add color"
           value={this.state.addColor}
           onChange={(value) => this.handleInputChange('addColor', value)}
-          onKeyDown={(e) => e.keyCode === 13 && this.addColor(e.currentTarget.value)} />
+          onKeyDown={(e) => e.keyCode === ENTER && this.addColor(e.currentTarget.value)} />
       </div>
-    )
+    );
   }
 }
