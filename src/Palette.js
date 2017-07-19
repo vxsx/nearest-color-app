@@ -3,15 +3,18 @@ import { Card, CardMedia, CardTitle } from 'react-toolbox/lib/card';
 import { Button } from 'react-toolbox/lib/button';
 import Input from 'react-toolbox/lib/input';
 import style from './palette.scss';
-import { uniq, without } from 'lodash';
+import EditDialog from './EditDialog';
+import { find, findIndex, uniqBy, filter } from 'lodash';
 import diff from 'color-diff';
 
 const ENTER = 13;
 
 const ColorsList = (props) => (
   <div className={style.list}>
-    {props.colors.map((color) => {
+    {props.colors.map(({ c, v }) => {
       let className = style.item;
+      const color = c;
+      const variable = v;
 
       if (props.match && props.match !== color) {
         className = style.itemNonMatch;
@@ -23,13 +26,19 @@ const ColorsList = (props) => (
             <CardMedia color={color} aspectRatio="wide">
                 <Button
                   icon="delete"
-                  floating mini primary
+                  floating mini
                   className={style.delete}
                   onClick={() => props.onRemove(color)}
                 />
+                <Button
+                  icon="edit"
+                  floating mini
+                  className={style.edit}
+                  onClick={() => props.onEdit(color)}
+                />
             </CardMedia>
-            </div>
-          <CardTitle title={color} />
+          </div>
+          <CardTitle title={color} subtitle={variable} />
         </Card>
       );
     })}
@@ -38,10 +47,12 @@ const ColorsList = (props) => (
 
 /**
  * @function convertHexToRGB
- * @param {String} hex representation of the color
+ * @param {Object} obj color / variable pair
+ * @param {String} obj.c hex representation of the color
  * @returns {Object} { R, G, B }
  */
-function convertHexToRGB(hex) {
+function convertHexToRGB({ c }) {
+  const hex = c;
   const color = hex.replace(/^#/, '');
 
   /* eslint-disable no-magic-numbers */
@@ -76,21 +87,32 @@ export default class Palette extends Component {
       addColor: '',
       findNearestColor: '',
       computedNearestColor: '',
-      colors: this.readStateFromHash().map((color) => this.normalizeColor(color))
+      colors: this.readStateFromHash().map(({ c, v }) => ({ v, c: this.normalizeColor(c) }))
     };
   }
 
   readStateFromHash() {
     const hash = window.location.hash.replace(/^#/, '');
+    let state = [];
 
     if (hash) {
       try {
-        return JSON.parse(decodeURIComponent(hash));
+        state = JSON.parse(decodeURIComponent(hash));
       } catch (e) {
-        return [];
+        return state;
       }
     }
-    return [];
+
+    return state.map((item) => {
+      if (typeof item === 'string') {
+        return {
+          c: item,
+          v: ''
+        };
+      }
+
+      return item;
+    });
   }
 
   writeStateToHash(state) {
@@ -135,7 +157,7 @@ export default class Palette extends Component {
     }
 
     this.setState({
-      colors: uniq([this.normalizeColor(color)].concat(this.state.colors)),
+      colors: uniqBy([{ c: this.normalizeColor(color) }].concat(this.state.colors), 'c'),
       addColor: ''
     });
   }
@@ -148,7 +170,30 @@ export default class Palette extends Component {
 
   onRemove(color) {
     this.setState({
-      colors: without(this.state.colors, color)
+      colors: filter(this.state.colors, ({ c }) => c !== color)
+    });
+  }
+
+  onEdit(color) {
+    this.setState({
+      editing: find(this.state.colors, ({ c }) => c === color)
+    });
+  }
+
+  onEditFinish({ c, v }) {
+    const color = c;
+    const index = findIndex(this.state.colors, (colorObj) => colorObj.c === color);
+
+    if (index === -1) { // eslint-disable-line no-magic-numbers
+      return;
+    }
+
+    this.setState((state) => {
+      state.editing = false;
+      state.colors[index] = { c, v };
+      state.colors = [].concat(state.colors);
+
+      return state;
     });
   }
 
@@ -162,7 +207,7 @@ export default class Palette extends Component {
     const color = this.normalizeColor(value);
 
     const nearestColor = diff.closest(
-      convertHexToRGB(color),
+      convertHexToRGB({ c: color }),
       this.state.colors.map(convertHexToRGB)
     );
 
@@ -193,12 +238,18 @@ export default class Palette extends Component {
           colors={this.state.colors}
           match={this.state.computedNearestColor}
           onRemove={(color) => this.onRemove(color)}
+          onEdit={(color) => this.onEdit(color)}
         />
         <Input type="text" name="color"
           label="Add color"
           value={this.state.addColor}
           onChange={(value) => this.handleInputChange('addColor', value)}
           onKeyDown={(e) => e.keyCode === ENTER && this.addColor(e.currentTarget.value)} />
+        <EditDialog
+          active={this.state.editing}
+          onSave={(v) => this.onEditFinish(v)}
+          onClose={() => this.setState({ editing: false })}
+        />
       </div>
     );
   }

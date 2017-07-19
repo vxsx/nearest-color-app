@@ -55,6 +55,9 @@
 .delete {
   display: none;
 }
+.edit {
+  display: none;
+}
 
 [data-react-toolbox="card"] h5 {
   font-size: 1.6rem !important;
@@ -64,11 +67,21 @@
 }
 
 [data-react-toolbox="card"]:hover {
+  .edit,
   .delete {
     display: block;
     position: absolute !important;
     right: 1rem;
     top: 1rem;
+  }
+
+  .edit {
+    right: 6rem;
+  }
+}
+[data-react-toolbox=input] {
+  & + & {
+    margin-top: 20px;
   }
 }
 // cardmedia is currently broken in ff so I fix it myself
