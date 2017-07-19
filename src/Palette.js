@@ -76,7 +76,7 @@ export default class Palette extends Component {
       addColor: '',
       findNearestColor: '',
       computedNearestColor: '',
-      colors: this.readStateFromHash()
+      colors: this.readStateFromHash().map((color) => this.normalizeColor(color))
     };
   }
 
